@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../widgets/focusable_game_card.dart';
+import '../widgets/carousel_row.dart';
+import '../pagination_model.dart';
 
 class LibraryPage extends StatelessWidget {
   const LibraryPage({Key? key}) : super(key: key);
 
-  final List<String> recentlyAdded = const [
+  static const List<String> recentlyAdded = [
     'Celestial Quest',
     'Dungeon Crawler',
     'Sky Realms',
@@ -12,7 +14,7 @@ class LibraryPage extends StatelessWidget {
     'Mystic Forest',
   ];
 
-  final List<String> completedGames = const [
+  static const List<String> completedGames = [
     'Retro Racer',
     'Puzzle Master',
     'Space Odyssey',
@@ -20,81 +22,49 @@ class LibraryPage extends StatelessWidget {
     'Castle Siege',
   ];
 
+  Future<Paginated<String>> _fetchRecentlyAdded(int page) async {
+    // For demonstration, return all items on page 1, empty on others
+    if (page == 1) {
+      return Paginated<String>(count: recentlyAdded.length, data: recentlyAdded);
+    } else {
+      return Paginated<String>(count: recentlyAdded.length, data: []);
+    }
+  }
+
+  Future<Paginated<String>> _fetchCompletedGames(int page) async {
+    if (page == 1) {
+      return Paginated<String>(count: completedGames.length, data: completedGames);
+    } else {
+      return Paginated<String>(count: completedGames.length, data: []);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        // Recently Added Section
-        Text(
-          'Recently Added',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(recentlyAdded.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: SizedBox(
-                  width: 200,
-                  height: 120,
-                  child: FocusableGameCard(
-                    autofocus: index == 0,
-                    onSelect: () => print('Selected: \\${recentlyAdded[index]}'),
-                    child: Container(
-                      color: Colors.blueGrey.shade700,
-                      alignment: Alignment.center,
-                      child: Text(
-                        recentlyAdded[index],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
+        CarouselRow<String>(
+          autofocusFirst: true,
+          heading: 'Recently Added',
+          cardSpacing: 10,
+          cardsPerView: 3,
+          handleApiCall: _fetchRecentlyAdded,
+          cardBuilder: (context, item, width, index, autofocus) => FocusableGameCard(
+            child: Text(item, style: TextStyle(color: Colors.white)),
+            onSelect: () {},
+            autofocus: autofocus ?? false,
           ),
         ),
         SizedBox(height: 40),
-        // Completed Games Section
-        Text(
-          'Completed Games',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(completedGames.length, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: SizedBox(
-                  width: 200,
-                  height: 120,
-                  child: FocusableGameCard(
-                    autofocus: false,
-                    onSelect: () => print('Selected: \\${completedGames[index]}'),
-                    child: Container(
-                      color: Colors.blueGrey.shade700,
-                      alignment: Alignment.center,
-                      child: Text(
-                        completedGames[index],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }),
+        CarouselRow<String>(
+          heading: 'Completed Games',
+          cardSpacing: 10,
+          cardsPerView: 3,
+          handleApiCall: _fetchCompletedGames,
+          cardBuilder: (context, item, width, index, autofocus) => FocusableGameCard(
+            child: Text(item, style: TextStyle(color: Colors.white)),
+            onSelect: () {},
+            autofocus: autofocus ?? false,
           ),
         ),
       ],

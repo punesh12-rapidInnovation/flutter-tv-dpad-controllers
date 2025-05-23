@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'focusable_widget.dart';
 
 class FocusableGameCard extends StatefulWidget {
   final Widget child;
   final VoidCallback onSelect;
   final bool autofocus;
+  final ValueChanged<bool>? onFocusChange;
 
   const FocusableGameCard({
     required this.child,
     required this.onSelect,
     this.autofocus = false,
-    Key? key,
-  }) : super(key: key);
+    this.onFocusChange,
+    super.key,
+  });
 
   @override
   State<FocusableGameCard> createState() => _FocusableGameCardState();
@@ -26,7 +27,10 @@ class _FocusableGameCardState extends State<FocusableGameCard> {
     return FocusableWidget(
       autofocus: widget.autofocus,
       onSelect: widget.onSelect,
-      onFocusChange: (focused) => setState(() => _focused = focused),
+      onFocusChange: (focused) {
+        setState(() => _focused = focused);
+        widget.onFocusChange?.call(focused);
+      },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         decoration: BoxDecoration(

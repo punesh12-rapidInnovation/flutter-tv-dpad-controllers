@@ -73,7 +73,6 @@ class _SidebarState extends State<Sidebar> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
       width: _isFocused ? 200 : 70,
-      color: Colors.black87,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(_items.length, (index) {
@@ -89,7 +88,6 @@ class _SidebarState extends State<Sidebar> {
             onBlur: () => _handleFocusChange(false),
             expanded: _isFocused,
             onTap: () {
-              print('onTap: ${item['route']}');
               _setSelectedIndex(index);
               if (item['route'] != null) {
                 Navigator.of(context).pushReplacementNamed(item['route']);

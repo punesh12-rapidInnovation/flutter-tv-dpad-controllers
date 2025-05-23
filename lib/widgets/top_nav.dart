@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class TopNav extends StatelessWidget {
   final ValueChanged<String>? onSearch;
 
-  const TopNav({Key? key, this.onSearch}) : super(key: key);
+  const TopNav({super.key, this.onSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class TopNav extends StatelessWidget {
             child: Container(
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Focus(
