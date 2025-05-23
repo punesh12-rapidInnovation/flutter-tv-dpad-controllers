@@ -1,11 +1,17 @@
+import 'package:dpad_controls/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import '../widgets/focusable_game_card.dart';
-import '../widgets/carousel_row.dart';
 import '../pagination_model.dart';
+import '../widgets/carousel_row.dart';
+import '../widgets/image_card.dart';
 
-class LibraryPage extends StatelessWidget {
-  const LibraryPage({Key? key}) : super(key: key);
+class LibraryPage extends StatefulWidget {
+  const LibraryPage({super.key});
 
+  @override
+  State<LibraryPage> createState() => _LibraryPageState();
+}
+
+class _LibraryPageState extends State<LibraryPage> {
   static const List<String> recentlyAdded = [
     'Celestial Quest',
     'Dungeon Crawler',
@@ -21,6 +27,35 @@ class LibraryPage extends StatelessWidget {
     'Jungle Run',
     'Castle Siege',
   ];
+
+  final List<GameItem> savedGames = [
+    GameItem(
+      name: 'Quantum Arena',
+      imageUrl: 'https://picsum.photos/id/1021/200/120',
+    ),
+    GameItem(
+      name: 'Pixel Quest',
+      imageUrl: 'https://picsum.photos/id/1022/200/120',
+    ),
+    GameItem(
+      name: 'Skybound Saga',
+      imageUrl: 'https://picsum.photos/id/1023/200/120',
+    ),
+    GameItem(
+      name: 'Galactic Run',
+      imageUrl: 'https://picsum.photos/id/1024/200/120',
+    ),
+    GameItem(
+      name: 'Mystic Valley',
+      imageUrl: 'https://picsum.photos/id/1025/200/120',
+    ),
+    GameItem(
+      name: 'Cyber Sprint',
+      imageUrl: 'https://picsum.photos/id/1026/200/120',
+    ),
+  ];
+
+ 
 
   Future<Paginated<String>> _fetchRecentlyAdded(int page) async {
     // For demonstration, return all items on page 1, empty on others
@@ -41,33 +76,34 @@ class LibraryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Helper to wire up up/down focus movement
+    Widget buildCarouselRow(int rowIndex, String heading, List<GameItem> items, {bool autofocusFirst = false}) {
+      return CarouselRow<GameItem>(
+        heading: heading,
+        cardSpacing: 16,
+        cardsPerView: 4,
+        autofocusFirst: autofocusFirst,
+        handleApiCall: (page) async {
+          return Paginated<GameItem>(count: items.length, data: items);
+        },
+        cardBuilder: (context, item, width, index, autofocus) {
+          return ImageCard(
+            imageUrl: item.imageUrl,
+            title: item.name,
+            autofocus: autofocus ?? false,
+            onSelect: () {},
+          );
+        },
+      );
+    }
+
     return ListView(
       children: [
-        CarouselRow<String>(
-          autofocusFirst: true,
-          heading: 'Recently Added',
-          cardSpacing: 10,
-          cardsPerView: 3,
-          handleApiCall: _fetchRecentlyAdded,
-          cardBuilder: (context, item, width, index, autofocus) => FocusableGameCard(
-            child: Text(item, style: TextStyle(color: Colors.white)),
-            onSelect: () {},
-            autofocus: autofocus ?? false,
-          ),
-        ),
+        buildCarouselRow(0, 'Beautiful Places', savedGames, autofocusFirst: true),
+        buildCarouselRow(1, 'Recently Added', savedGames),
         SizedBox(height: 40),
-        CarouselRow<String>(
-          heading: 'Completed Games',
-          cardSpacing: 10,
-          cardsPerView: 3,
-          handleApiCall: _fetchCompletedGames,
-          cardBuilder: (context, item, width, index, autofocus) => FocusableGameCard(
-            child: Text(item, style: TextStyle(color: Colors.white)),
-            onSelect: () {},
-            autofocus: autofocus ?? false,
-          ),
-        ),
+        buildCarouselRow(2, 'Completed Games', savedGames),
       ],
     );
   }
-} 
+}

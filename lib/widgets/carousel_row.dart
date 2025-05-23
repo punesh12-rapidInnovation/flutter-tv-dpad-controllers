@@ -13,7 +13,7 @@ class CarouselRow<T> extends StatefulWidget {
     super.key,
     required this.heading,
     required this.cardSpacing,
-    required this.cardsPerView,
+    this.cardsPerView =  4,
     this.handleApiCall,
     required this.cardBuilder,
     this.autofocusFirst = false,

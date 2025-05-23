@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'focusable_widget.dart';
 
 class Sidebar extends StatefulWidget {
+  const Sidebar({super.key});
   @override
   State<Sidebar> createState() => _SidebarState();
 }
@@ -110,6 +110,7 @@ class SidebarItem extends StatefulWidget {
   final VoidCallback? onTap;
 
   const SidebarItem({
+    super.key,
     required this.icon,
     required this.label,
     required this.selected,
@@ -167,7 +168,7 @@ class _SidebarItemState extends State<SidebarItem> {
                   widget.label ?? '',
                   style: TextStyle(
                     color: widget.selected
-                        ? (_focused ? Color(0xFF007AFF) : Color(  0xFFA259FF))
+                        ? (_focused ? Color(0xFFA259FF) : Color(  0xFF007AFF))
                         : Colors.white,
                     fontSize: 16,
                   ),
